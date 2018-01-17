@@ -45,7 +45,7 @@ public class ExpenseDaoTest {
     @Test
     public void insertExpense() throws  Exception{
         Expense expense = new Expense(new Date().getTime(),"Food","Eat Lunch",23.3);
-        expenseDao.insertExpense(expense);
+        List<Long> x=expenseDao.insertExpense(expense);
         List<Expense> expenseList = expenseDao.findAllExpense();
         assert expenseList.get(0).getPrice()==30;
     }

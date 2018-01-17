@@ -18,7 +18,7 @@ import java.util.List;
 public interface ExpenseDao {
 
     @Insert
-    void insertExpense(Expense... expense);
+    List<Long> insertExpense(Expense... expense);
 
     @Query(value = "SELECT * FROM "+Expense.TABLE_EXPENSE)
     List<Expense> findAllExpense();
