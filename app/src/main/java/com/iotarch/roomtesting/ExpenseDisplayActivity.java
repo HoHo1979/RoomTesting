@@ -33,7 +33,7 @@ public class ExpenseDisplayActivity extends AppCompatActivity {
 
     ExpenseDao expenseDao;
 
-    List<Expense> expenseList = new ArrayList<>();
+    List<Expense> expenseList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,6 +41,8 @@ public class ExpenseDisplayActivity extends AppCompatActivity {
         setContentView(R.layout.activity_expense_display);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        expenseList = new ArrayList<>();
 
         expenseDao = ExpenseDatabase.getInstance(this).expenseDao();
 
@@ -82,7 +84,8 @@ public class ExpenseDisplayActivity extends AppCompatActivity {
 
     @Override
     protected void onDestroy() {
-        ExpenseDatabase.destroyInstance();
+        //This causes the error if user press back button and come to this view again the database connection will be closed.
+//        ExpenseDatabase.destroyInstance();
         super.onDestroy();
     }
 }

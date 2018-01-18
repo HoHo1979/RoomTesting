@@ -32,6 +32,10 @@ public abstract class ExpenseDatabase extends RoomDatabase {
     };
 
     public static void destroyInstance() {
+
+        if(instance!=null)
+            instance.close();
+
         instance = null;
     }
 

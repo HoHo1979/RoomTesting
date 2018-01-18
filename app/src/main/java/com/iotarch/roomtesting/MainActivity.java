@@ -25,6 +25,15 @@ import java.util.List;
 //2. DAO class that has access method with SQL query , insert, update and Deleted Annotations.
 //3. A Abstract Database Object that extends RoomDatabase with abstract method that returns ExpenseDao.
 
+//RecyclerView with Adapter to generate UI
+
+//Use ViewModel rather than cursorloader to updat the UI
+//4. A AndroidViewModel observer the dataase to update the UI
+
+
+
+
+
 public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = MainActivity.class.getSimpleName() ;
