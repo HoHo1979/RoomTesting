@@ -11,6 +11,7 @@ import com.iotarch.roomtesting.dao.ExpenseDao;
 import com.iotarch.roomtesting.database.ExpenseDatabase;
 import com.iotarch.roomtesting.entity.Expense;
 
+import java.lang.ref.WeakReference;
 import java.util.Date;
 import java.util.List;
 
@@ -43,24 +44,41 @@ public class ExpenseViewModel extends AndroidViewModel {
     private void loadExpense() {
 
 
-        new AsyncTask<Void,Void,List<Expense>>(){
-            @Override
-            protected List<Expense> doInBackground(Void... voids) {
-
-                return expenseDao.findAllExpense();
-            }
-
-            @Override
-            protected void onPostExecute(List<Expense> expenseList) {
-
-                expense.setValue(expenseList);
-
-            }
-        }.execute();
+        MyAsyncTask myAsyncTask = new MyAsyncTask(this);
+        myAsyncTask.execute();
 
 
     };
 
+
+    static class MyAsyncTask extends AsyncTask<Void,Void,List<Expense>>{
+
+
+        WeakReference<ExpenseViewModel> weakReference;
+
+
+        public MyAsyncTask(ExpenseViewModel expenseViewModel){
+            weakReference = new WeakReference<ExpenseViewModel>(expenseViewModel);
+        }
+
+
+        @Override
+        protected List<Expense> doInBackground(Void... voids) {
+
+            if(weakReference.get()==null)
+                return null;
+
+            return weakReference.get().expenseDao.findAllExpense();
+
+        }
+
+        @Override
+        protected void onPostExecute(List<Expense> expenseList) {
+
+            weakReference.get().expense.setValue(expenseList);
+
+        }
+    }
 
 
 }

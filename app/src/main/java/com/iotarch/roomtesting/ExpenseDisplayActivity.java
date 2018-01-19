@@ -65,9 +65,9 @@ public class ExpenseDisplayActivity extends AppCompatActivity {
 
         });
 
-//        expenseView.addItemDecoration(new DividerItemDecoration(this,LinearLayoutManager.VERTICAL));
-//
-//        expenseView.setItemAnimator(new DefaultItemAnimator());
+        expenseView.addItemDecoration(new DividerItemDecoration(this,LinearLayoutManager.VERTICAL));
+
+        expenseView.setItemAnimator(new DefaultItemAnimator());
 
         expenseView.setAdapter(adapter);
 

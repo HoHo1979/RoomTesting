@@ -15,8 +15,12 @@ import com.iotarch.roomtesting.dao.ExpenseDao;
 import com.iotarch.roomtesting.database.ExpenseDatabase;
 import com.iotarch.roomtesting.entity.Expense;
 
+import java.lang.ref.WeakReference;
+import java.net.ConnectException;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.Executor;
+import java.util.concurrent.ThreadPoolExecutor;
 
 
 //This is the App that test the Room API that help SQLLight to access the database.
@@ -31,7 +35,7 @@ import java.util.List;
 //4. A AndroidViewModel observer the dataase to update the UI
 
 
-
+//5.Create static MyAsyncTask to avoid memory leak
 
 
 public class MainActivity extends AppCompatActivity {
@@ -42,14 +46,14 @@ public class MainActivity extends AppCompatActivity {
     private TextView price;
     private EditText timeStamp;
 
-    ExpenseDao expenseDao;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        expenseDao=ExpenseDatabase.getInstance(getApplicationContext()).expenseDao();
+
 
         itemName=findViewById(R.id.itemName);
         info=findViewById(R.id.info);
@@ -61,22 +65,13 @@ public class MainActivity extends AppCompatActivity {
 
     public void addExpense(View view){
 
-        new AsyncTask<Void, Void, Void>() {
-            @Override
-            protected Void doInBackground(Void... voids) {
-                String name=itemName.getText().toString();
-                String i= info.getText().toString();
-                double p = Double.parseDouble(price.getText().toString());
-                long t = new Date().getTime();
 
-                Expense expense = new Expense(t,name,i,23.5);
-                List<Long> x=expenseDao.insertExpense(expense);
+        Expense expense = new Expense(new Date().getTime(),
+                itemName.getText().toString(),info.getText().toString(),Double.parseDouble(price.getText().toString()));
 
-                return null;
+        MyAsyncTask asyncTask = new MyAsyncTask(this);
 
-            }
-        }.execute();
-
+        asyncTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,expense);
 
         Intent intent = new Intent(this,ExpenseDisplayActivity.class);
         startActivity(intent);
@@ -88,5 +83,30 @@ public class MainActivity extends AppCompatActivity {
     protected void onDestroy() {
         ExpenseDatabase.destroyInstance();
         super.onDestroy();
+    }
+
+    //Crate a Static MyAsyncTask to avoid memory leak.
+    static class MyAsyncTask extends AsyncTask<Expense,Void,List<Long>>{
+
+        ExpenseDao expenseDao;
+
+        WeakReference<MainActivity> reference;
+
+        public MyAsyncTask(MainActivity context){
+            reference = new WeakReference<MainActivity>(context);
+        }
+
+        @Override
+        protected List<Long> doInBackground(Expense... expenses) {
+
+
+            if(reference.get()==null)
+                return null;
+
+            expenseDao=ExpenseDatabase.getInstance(reference.get()).expenseDao();
+
+            return expenseDao.insertExpense(expenses);
+
+        }
     }
 }
