@@ -1,13 +1,18 @@
 package com.iotarch.roomtesting;
 
+import android.app.DatePickerDialog;
 import android.arch.persistence.room.Room;
 import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.TextView;
 
@@ -17,6 +22,10 @@ import com.iotarch.roomtesting.entity.Expense;
 
 import java.lang.ref.WeakReference;
 import java.net.ConnectException;
+import java.text.ParsePosition;
+import java.text.SimpleDateFormat;
+import java.time.Instant;
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.Executor;
@@ -45,7 +54,8 @@ public class MainActivity extends AppCompatActivity {
     private TextView info;
     private TextView price;
     private EditText timeStamp;
-
+    private Button dateButton;
+    private SimpleDateFormat dateFormat;
 
 
     @Override
@@ -59,6 +69,25 @@ public class MainActivity extends AppCompatActivity {
         info=findViewById(R.id.info);
         price=findViewById(R.id.price);
         timeStamp=findViewById(R.id.date);
+        dateButton = findViewById(R.id.dateButton);
+
+
+        Date date = new Date();
+        dateFormat = new SimpleDateFormat("yyyy/MM/dd");
+
+        timeStamp.setText(dateFormat.format(date));
+
+        DatePickerDialog datePickerDialog = new DatePickerDialog(this);
+
+        datePickerDialog.setOnDateSetListener(new DatePickerDialog.OnDateSetListener() {
+            @Override
+            public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
+                timeStamp.setText(year+"/"+(month+1)+"/"+dayOfMonth);
+            }
+        });
+
+       dateButton.setOnClickListener(e->datePickerDialog.show());
+
 
     }
 
@@ -66,7 +95,11 @@ public class MainActivity extends AppCompatActivity {
     public void addExpense(View view){
 
 
-        Expense expense = new Expense(new Date().getTime(),
+        String dateString = timeStamp.getText().toString();
+
+        long time=dateFormat.parse(dateString,new ParsePosition(0)).getTime();
+
+        Expense expense = new Expense(time,
                 itemName.getText().toString(),info.getText().toString(),Double.parseDouble(price.getText().toString()));
 
         MyAsyncTask asyncTask = new MyAsyncTask(this);

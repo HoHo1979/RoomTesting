@@ -10,6 +10,8 @@ import com.iotarch.roomtesting.entity.Expense;
 
 import org.w3c.dom.Text;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -44,7 +46,7 @@ public class ExpenseRecyclerAdapter extends RecyclerView.Adapter<ExpenseRecycler
         holder.tx_name.setText(expense.getItemName());
         holder.tx_info.setText(expense.getInfo());
         holder.tx_price.setText(String.valueOf(expense.getPrice()));
-
+        holder.tx_date.setText(new SimpleDateFormat("yyyy/MM/dd").format(new Date(expense.getTimestamp())));
 
     }
 
@@ -60,6 +62,7 @@ public class ExpenseRecyclerAdapter extends RecyclerView.Adapter<ExpenseRecycler
         private final TextView tx_name;
         private final TextView tx_info;
         private final TextView tx_price;
+        private final TextView tx_date;
 
 
         public MyViewHolder(View itemView) {
@@ -70,6 +73,7 @@ public class ExpenseRecyclerAdapter extends RecyclerView.Adapter<ExpenseRecycler
             tx_name=itemView.findViewById(R.id.ex_name);
             tx_info=itemView.findViewById(R.id.ex_info);
             tx_price=itemView.findViewById(R.id.ex_price);
+            tx_date=itemView.findViewById(R.id.ex_date);
 
         }
 
