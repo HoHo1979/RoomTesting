@@ -4,9 +4,11 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.TextView;
 
 import com.iotarch.roomtesting.entity.Expense;
+import com.iotarch.roomtesting.myinterface.MyItemClickedListener;
 
 import org.w3c.dom.Text;
 
@@ -22,11 +24,11 @@ public class ExpenseRecyclerAdapter extends RecyclerView.Adapter<ExpenseRecycler
 
     List<Expense> expenseList;
     MyViewHolder viewHolder;
+    MyItemClickedListener listener;
 
-
-    public ExpenseRecyclerAdapter(List<Expense> expenseList){
+    public ExpenseRecyclerAdapter(List<Expense> expenseList, MyItemClickedListener listener){
         this.expenseList=expenseList;
-
+        this.listener=listener;
     }
 
     @Override
@@ -41,6 +43,7 @@ public class ExpenseRecyclerAdapter extends RecyclerView.Adapter<ExpenseRecycler
     @Override
     public void onBindViewHolder(MyViewHolder holder, int position) {
 
+        holder.bind(expenseList.get(position),listener);
         Expense expense = expenseList.get(position);
         holder.tx_id.setText(String.valueOf(expense.getUid()));
         holder.tx_name.setText(expense.getItemName());
@@ -77,6 +80,16 @@ public class ExpenseRecyclerAdapter extends RecyclerView.Adapter<ExpenseRecycler
 
         }
 
+        public void bind(Expense expense,MyItemClickedListener listener) {
+
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    listener.itemClicked(expense);
+                }
+            });
+
+        }
     }
 
 

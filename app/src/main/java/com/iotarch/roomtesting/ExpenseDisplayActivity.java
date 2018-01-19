@@ -14,17 +14,19 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
+import android.widget.Toast;
 
 import com.iotarch.roomtesting.dao.ExpenseDao;
 import com.iotarch.roomtesting.database.ExpenseDatabase;
 import com.iotarch.roomtesting.entity.Expense;
+import com.iotarch.roomtesting.myinterface.MyItemClickedListener;
 import com.iotarch.roomtesting.presenter.ExpenseViewModel;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-public class ExpenseDisplayActivity extends AppCompatActivity {
+public class ExpenseDisplayActivity extends AppCompatActivity implements MyItemClickedListener{
 
     private ExpenseRecyclerAdapter adapter;
     private RecyclerView expenseView;
@@ -49,7 +51,7 @@ public class ExpenseDisplayActivity extends AppCompatActivity {
 
         expenseView = findViewById(R.id.expenseRecycler);
 
-        adapter = new ExpenseRecyclerAdapter(expenseList);
+        adapter = new ExpenseRecyclerAdapter(expenseList,this);
 
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getApplicationContext());
 
@@ -87,5 +89,12 @@ public class ExpenseDisplayActivity extends AppCompatActivity {
         //This causes the error if user press back button and come to this view again the database connection will be closed.
 //        ExpenseDatabase.destroyInstance();
         super.onDestroy();
+    }
+
+    @Override
+    public void itemClicked(Expense expense) {
+
+        Toast.makeText(this,expense.getItemName(),Toast.LENGTH_LONG).show();
+
     }
 }
