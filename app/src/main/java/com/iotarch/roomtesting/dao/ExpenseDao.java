@@ -1,5 +1,6 @@
 package com.iotarch.roomtesting.dao;
 
+import android.arch.paging.DataSource;
 import android.arch.persistence.room.Dao;
 import android.arch.persistence.room.Insert;
 import android.arch.persistence.room.Query;
@@ -28,5 +29,9 @@ public interface ExpenseDao {
 
     @Query(value = "SELECT * FROM "+Expense.TABLE_EXPENSE+" WHERE timestamp BETWEEN :startTime AND :finishTime")
     List<Expense> findExpenseBetweenTime(long startTime,long finishTime);
+
+    @Query("SELECT * FROM "+ Expense.TABLE_EXPENSE)
+    public abstract DataSource.Factory<Integer, Expense> findAllPagedExperence();
+
 
 }

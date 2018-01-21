@@ -1,5 +1,6 @@
 package com.iotarch.roomtesting;
 
+import android.annotation.TargetApi;
 import android.app.DatePickerDialog;
 import android.arch.persistence.room.Room;
 import android.content.Context;
@@ -76,6 +77,7 @@ public class MainActivity extends AppCompatActivity {
         dateFormat = new SimpleDateFormat("yyyy/MM/dd");
 
         timeStamp.setText(dateFormat.format(date));
+
 
         DatePickerDialog datePickerDialog = new DatePickerDialog(this);
 

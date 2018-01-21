@@ -4,16 +4,21 @@ import android.app.Application;
 import android.arch.lifecycle.AndroidViewModel;
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MutableLiveData;
+import android.arch.paging.LivePagedListBuilder;
+import android.arch.paging.PagedList;
 import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 
 import com.iotarch.roomtesting.dao.ExpenseDao;
 import com.iotarch.roomtesting.database.ExpenseDatabase;
 import com.iotarch.roomtesting.entity.Expense;
+import com.iotarch.roomtesting.repository.ExpenseRepository;
 
 import java.lang.ref.WeakReference;
 import java.util.Date;
 import java.util.List;
+
+import javax.inject.Inject;
 
 /**
  * Created by JamesHo on 2018/1/17.
@@ -23,7 +28,11 @@ public class ExpenseViewModel extends AndroidViewModel {
 
     private MutableLiveData<List<Expense>> expense;
 
+    private LiveData<PagedList<Expense>> pagedExpense;
+
     ExpenseDao expenseDao;
+
+    ExpenseRepository repository;
 
     public ExpenseViewModel(@NonNull Application application) {
         super(application);
@@ -39,6 +48,12 @@ public class ExpenseViewModel extends AndroidViewModel {
             loadExpense();
         }
         return expense;
+    }
+
+    public LiveData<PagedList<Expense>> getPagedExpenses(){
+
+        return new LivePagedListBuilder<>(expenseDao.findAllPagedExperence(),5).build();
+
     }
 
     private void loadExpense() {

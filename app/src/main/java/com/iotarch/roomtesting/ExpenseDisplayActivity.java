@@ -31,6 +31,8 @@ public class ExpenseDisplayActivity extends AppCompatActivity implements MyItemC
     private ExpenseRecyclerAdapter adapter;
     private RecyclerView expenseView;
 
+    private ExpenseRecyclerPagedAdapter pageAdapter;
+
     private static final String TAG = ExpenseDisplayActivity.class.getSimpleName();
 
     ExpenseDao expenseDao;
@@ -51,19 +53,28 @@ public class ExpenseDisplayActivity extends AppCompatActivity implements MyItemC
 
         expenseView = findViewById(R.id.expenseRecycler);
 
-        adapter = new ExpenseRecyclerAdapter(expenseList,this);
+     //   adapter = new ExpenseRecyclerAdapter(expenseList,this);
+
+        pageAdapter = new ExpenseRecyclerPagedAdapter();
 
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getApplicationContext());
 
         expenseView.setLayoutManager(layoutManager);
 
+
         ExpenseViewModel expenseViewModel = ViewModelProviders.of(this).get(ExpenseViewModel.class);
-        expenseViewModel.getExpenses().observe(this,expenses->{
+//        expenseViewModel.getExpenses().observe(this,expenses->{
+//
+//
+//            expenseList.addAll(expenses);
+//
+//            adapter.notifyDataSetChanged();
+//
+//        });
 
+        expenseViewModel.getPagedExpenses().observe(this,pagedList->{
 
-            expenseList.addAll(expenses);
-
-            adapter.notifyDataSetChanged();
+            pageAdapter.setList(pagedList);
 
         });
 
@@ -71,7 +82,10 @@ public class ExpenseDisplayActivity extends AppCompatActivity implements MyItemC
 
         expenseView.setItemAnimator(new DefaultItemAnimator());
 
-        expenseView.setAdapter(adapter);
+       // expenseView.setAdapter(adapter);
+
+        expenseView.setAdapter(pageAdapter);
+
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
