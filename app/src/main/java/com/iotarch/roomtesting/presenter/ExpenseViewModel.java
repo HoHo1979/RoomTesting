@@ -37,7 +37,6 @@ public class ExpenseViewModel extends AndroidViewModel {
     public ExpenseViewModel(@NonNull Application application) {
         super(application);
         expenseDao = ExpenseDatabase.getInstance(application.getApplicationContext()).expenseDao();
-
     }
 
     public LiveData<List<Expense>> getExpenses(){
@@ -49,6 +48,7 @@ public class ExpenseViewModel extends AndroidViewModel {
         }
         return expense;
     }
+
 
     public LiveData<PagedList<Expense>> getPagedExpenses(){
 

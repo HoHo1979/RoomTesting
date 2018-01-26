@@ -6,7 +6,6 @@ import android.arch.persistence.room.Room;
 import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -16,9 +15,11 @@ import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.iotarch.roomtesting.dao.ExpenseDao;
 import com.iotarch.roomtesting.database.ExpenseDatabase;
+import com.iotarch.roomtesting.di.AppComponent;
 import com.iotarch.roomtesting.entity.Expense;
 
 import java.lang.ref.WeakReference;
@@ -31,6 +32,12 @@ import java.util.Date;
 import java.util.List;
 import java.util.concurrent.Executor;
 import java.util.concurrent.ThreadPoolExecutor;
+
+import javax.inject.Inject;
+
+import dagger.android.AndroidInjection;
+import dagger.android.AndroidInjector;
+import dagger.android.support.DaggerAppCompatActivity;
 
 
 //This is the App that test the Room API that help SQLLight to access the database.
@@ -48,7 +55,7 @@ import java.util.concurrent.ThreadPoolExecutor;
 //5.Create static MyAsyncTask to avoid memory leak
 
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends DaggerAppCompatActivity implements MainView {
 
     private static final String TAG = MainActivity.class.getSimpleName() ;
     private TextView itemName;
@@ -59,11 +66,17 @@ public class MainActivity extends AppCompatActivity {
     private SimpleDateFormat dateFormat;
 
 
+    @Inject
+    MainPresenter presenter;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        presenter.loadMain();
 
 
         itemName=findViewById(R.id.itemName);
@@ -93,6 +106,11 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+    }
 
     public void addExpense(View view){
 
@@ -118,6 +136,13 @@ public class MainActivity extends AppCompatActivity {
     protected void onDestroy() {
         ExpenseDatabase.destroyInstance();
         super.onDestroy();
+    }
+
+    @Override
+    public void onMainLoaded() {
+
+        Toast.makeText(this,"The Presenter is working",Toast.LENGTH_LONG).show();
+
     }
 
     //Crate a Static MyAsyncTask to avoid memory leak.

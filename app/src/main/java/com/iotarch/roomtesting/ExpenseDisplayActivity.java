@@ -6,6 +6,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.DividerItemDecoration;
@@ -26,7 +27,16 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-public class ExpenseDisplayActivity extends AppCompatActivity implements MyItemClickedListener{
+import javax.inject.Inject;
+
+import dagger.android.AndroidInjector;
+import dagger.android.DispatchingAndroidInjector;
+import dagger.android.support.HasSupportFragmentInjector;
+
+public class ExpenseDisplayActivity extends AppCompatActivity implements HasSupportFragmentInjector, ExpenseDisplayView,MyItemClickedListener{
+
+    @Inject
+    DispatchingAndroidInjector<Fragment> fragmentDispatchingAndroidInjector;
 
     private ExpenseRecyclerAdapter adapter;
     private RecyclerView expenseView;
@@ -34,8 +44,8 @@ public class ExpenseDisplayActivity extends AppCompatActivity implements MyItemC
     private ExpenseRecyclerPagedAdapter pageAdapter;
 
     private static final String TAG = ExpenseDisplayActivity.class.getSimpleName();
-
-    ExpenseDao expenseDao;
+// Move ExpenseDao to ExpenseViewMoel so that Activity doesn't know how to access data.
+//    ExpenseDao expenseDao;
 
     List<Expense> expenseList;
 
@@ -48,7 +58,7 @@ public class ExpenseDisplayActivity extends AppCompatActivity implements MyItemC
 
         expenseList = new ArrayList<>();
 
-        expenseDao = ExpenseDatabase.getInstance(this).expenseDao();
+     //   expenseDao = ExpenseDatabase.getInstance(this).expenseDao();
 
 
         expenseView = findViewById(R.id.expenseRecycler);
@@ -110,5 +120,10 @@ public class ExpenseDisplayActivity extends AppCompatActivity implements MyItemC
 
         Toast.makeText(this,expense.getItemName(),Toast.LENGTH_LONG).show();
 
+    }
+
+    @Override
+    public AndroidInjector<Fragment> supportFragmentInjector() {
+        return fragmentDispatchingAndroidInjector;
     }
 }
